@@ -9,21 +9,9 @@ node {
       sh 'docker -v'
       sh 'printenv'
     }
-    stage('Build Docker test'){
-      sh 'docker build -t react-test -f Dockerfile.test --no-cache . '
-    }
-    stage('Docker test'){
-      sh 'docker run --rm react-test'
-    }
-    stage('Clean Docker test'){
-      sh 'docker rmi react-test'
-    }
-    stage('Deploy'){
-      if(env.BRANCH_NAME == 'master'){
-        sh 'docker build -t react-app --no-cache .'
-        sh 'docker tag react-app localhost:5000/react-app'
-        sh 'docker push localhost:5000/react-app'
-        sh 'docker rmi -f react-app localhost:5000/react-app'
+    stage('docker build/push') {
+      docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
+        def app = docker.build("mukeshdhamat/react-app:latest", '.').push()
       }
     }
   }
