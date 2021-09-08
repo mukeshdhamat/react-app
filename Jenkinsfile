@@ -14,6 +14,9 @@ node {
         def app = docker.build("mukeshdhamat/react-app:latest", '.').push()
       }
     }
+    stage('remove images') {
+      sh 'docker rmi mukeshdhamat/react-app:latest'
+    }
   }
   catch (err) {
     throw err
